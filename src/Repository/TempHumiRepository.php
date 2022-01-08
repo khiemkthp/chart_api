@@ -47,4 +47,34 @@ class TempHumiRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * get all data by condition
+     * 
+     * @return array
+     */
+    public function getAll($getParams)
+    {
+        $queryString = "
+            SELECT
+                id, 
+                temp, 
+                humi,
+                user_push,
+                time_push
+            FROM
+                temp_humi
+        ";
+        
+        if (!empty($getParams['limit'])) {
+            $queryString .= " limit ".$getParams['limit'];
+        }
+        if (!empty($getParams['offset'])) {
+            $queryString .= " offset ".$getParams['offset'];
+        }
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->executeQuery($queryString);
+        return $stmt->fetchAllAssociative();
+    }
 }
